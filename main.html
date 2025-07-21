@@ -6,10 +6,12 @@
 	<title>Document</title>
 </head>
 <body>
+	<input id="idd" type="text" style="width: 100vw;"/>
 	<button onclick="handleClick()">Click me</button>
 	<script>
 		function handleClick() {
-			fetch('https://testsv-eui0.onrender.com/get');
+			const url = document.getElementById('idd').value;
+			fetch(url).then(console.log);
 		}
 	</script>
 </body>

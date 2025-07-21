@@ -2,46 +2,27 @@ const http2 = require('http2');
 const fs = require('fs');
 const path = require('path');
 
-const server = http2.createServer((req, res) => {
+const activeSessions = new Set();
 
-});
+const server = http2.createServer();
 
-// Lắng nghe khi có kết nối mới
 server.on('session', (session) => {
-  console.log('🆕 New connection');
+  const socket = session.socket;
+  const socketId = socket.remoteAddress + ':' + socket.remotePort;
 
+  console.log('New connection', socketId);
   session.on('close', () => {
-    console.log('❌ Session closed');
-  });
+      activeSessions.delete(session);
+      console.log('❌ Session closed:', socketId);
+    });
 });
 
-// Lắng nghe các stream (yêu cầu mới)
 server.on('stream', (stream, headers) => {
   const method = headers[':method'];
   const pathName = headers[':path'];
   console.log(`📥 New ${method} request on ${pathName}`);
 
   if (method === 'GET' && pathName === '/') {
-    returnIndexPage(stream);
-  } else if (method === 'GET') {
-    handleGetReq(stream);
-  } else {
-    // Phản hồi cho các phương thức khác
-    stream.respond({ ':status': 405 });
-    stream.end('❌ Method not allowed');
-  }
-});
-
-// Giữ kết nối 15 giây nếu không có yêu cầu
-// server.setTimeout(15000);
-
-server.listen(8080, '0.0.0.0', () => {
-  console.log('HTTP/2 server listening on 0.0.0.0:8080');
-});
-
-
-function returnIndexPage(stream) {
-	// Serve id.html for GET /
     const filePath = path.join(__dirname, 'main.html');
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -55,13 +36,19 @@ function returnIndexPage(stream) {
       });
       stream.end(data);
     });
-}
-
-function handleGetReq(stream) {
-	// Trả về phản hồi cho GET
+  } else if (method === 'GET') {
     stream.respond({
       'content-type': 'text/plain',
       ':status': 200
     });
     stream.end(`✅ You sent a GET request to ${pathName}`);
-}
+  } else {
+    stream.respond({ ':status': 405 });
+    stream.end('❌ Method not allowed');
+  }
+});
+
+const port = process.env.PORT || 8080;
+server.listen(port, '0.0.0.0', () => {
+  console.log('HTTP/2 server (HTTPS) listening on 0.0.0.0:' + port);
+});
