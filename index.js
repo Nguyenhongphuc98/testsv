@@ -35,8 +35,8 @@ server.on('stream', (stream, headers) => {
 // Giữ kết nối 15 giây nếu không có yêu cầu
 // server.setTimeout(15000);
 
-server.listen(8080, () => {
-  console.log('HTTP/2 server listening on 8080');
+server.listen(8080, '0.0.0.0', () => {
+  console.log('HTTP/2 server listening on 0.0.0.0:8080');
 });
 
 

@@ -1,9 +1,10 @@
 const http2 = require('http2');
 // const client = http2.connect('http://localhost:8080');
-const client = http2.connect('https://testsv-eui0.onrender.com');
+const client = http2.connect('https://testsv-u6u1.onrender.com');
 for (let i = 0; i < 10; i++) {
 	setTimeout(() => {
 		
+		console.log('req', i);
 		const req = client.request({ ':path': '/hello' });
 		req.on('response', (headers) => {
 			req.on('data', chunk => process.stdout.write(chunk));
