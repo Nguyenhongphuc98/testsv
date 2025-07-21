@@ -4,7 +4,10 @@ const path = require('path');
 
 const activeSessions = new Set();
 
-const server = http2.createServer();
+const server = http2.createSecureServer({
+  cert: fs.readFileSync('server.crt'),
+  key: fs.readFileSync('server.key'),
+});
 
 server.on('session', (session) => {
   const socket = session.socket;
@@ -48,7 +51,7 @@ server.on('stream', (stream, headers) => {
   }
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8443;
 server.listen(port, '0.0.0.0', () => {
   console.log('HTTP/2 server (HTTPS) listening on 0.0.0.0:' + port);
 });
