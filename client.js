@@ -1,6 +1,8 @@
 const http2 = require('http2');
 // const client = http2.connect('http://localhost:8080');
-const client = http2.connect('http://0.0.0.0:8080/');
+const client = http2.connect('https://testsv-u6u1.onrender.com');
+// client.on('connect', e => {console.log(e)});
+
 for (let i = 0; i < 10; i++) {
 	setTimeout(() => {
 		
