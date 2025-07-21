@@ -1,6 +1,6 @@
 const http2 = require('http2');
 // const client = http2.connect('http://localhost:8080');
-const client = http2.connect('https://dns-test.haipq.dev/');
+const client = http2.connect('https://testsv-eui0.onrender.com');
 for (let i = 0; i < 10; i++) {
 	setTimeout(() => {
 		
